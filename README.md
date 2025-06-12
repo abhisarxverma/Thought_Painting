@@ -1,4 +1,4 @@
-# 🖤 ThoughtCanvas
+# 🖤 Thought Painting
 
 A No Login, Secure, Simple, healing web app where you can *drop heavy thoughts* into an invisible grid, and later **see how your mind unfolded**—one thought at a time.
 
@@ -6,9 +6,9 @@ A No Login, Secure, Simple, healing web app where you can *drop heavy thoughts* 
 
 ---
 
-## ✨ What is ThoughtCanvas?
+## ✨ What is Thought Painting?
 
-ThoughtCanvas is a black-screen canvas with invisible boxes where you can freely place your thoughts—no pressure, no rules. It's for those late-night mental weight moments when you just need to **get it out**.
+Thought Painting is a black-screen canvas with invisible boxes where you can freely place your thoughts—no pressure, no rules. It's for those late-night mental weight moments when you just need to **get it out**.
 
 Every thought you add builds a **progression**, a silent story of what your mind has been carrying. Below the main 4x4 grid, there's a **"Thought Canvas"**—a bigger space where you can freely extend the layout and even create **entire new canvases**.
 
