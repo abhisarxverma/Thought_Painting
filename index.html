@@ -1,13 +1,93 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Spray Thoughts</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Courgette&family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Delius&family=Edu+SA+Hand:wght@400..700&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Merienda:wght@300..900&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Nunito:ital,wght@0,200..1000;1,200..1000&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="creators_note.css">
+    <link rel="stylesheet" href="media.css">
 </head>
+
 <body>
     <div class="container"></div>
-    <script src="script.js"></script>
+    <div id="message-box">This is a notification!</div>
+
+    <div class="custom-context-menu">
+        <ul>
+            <li id="add-canvas">Add Thought Canvas Below</li>
+            <li id="save-painting">Save Your Thought Painting</li>
+            <li id="new-thought-canvas">New Thought Canvas</li>
+            <li id="download-btn">Download your thought painting as PDF</li>
+        </ul>
+    </div>
+
+    <div class="download-popup fade-in-out hide">
+        <div class="header">
+            <p>Select Thought Painting Download Layout</p>
+            <i class="fa-solid fa-xmark" id="download-popup-cross" style="color: #000000;"></i>
+        </div>
+        <div class="filename-input">
+            <label for="filename">Enter Filename</label>
+            <input name="filename" type="text" id="filename" value="Thought_painting">
+        </div>
+        <div class="buttons">
+            <button class="layout-button" data-layout="portrait">Portrait</button>
+            <button class="layout-button" data-layout="landscape">Landscape</button>
+        </div>
+    </div>
+
+    <div class="new-canvas-confirm-popup fade-in-out hide">
+        <div class="header">
+            <p>This Will Delete Whole Canvas.</p>
+            <i class="fa-solid fa-xmark" id="new-canvas-confirm-popup-cross" style="color: #000000;"></i>
+        </div>
+        <div class="buttons">
+            <button id="new-canvas-download-canvas">Download Current Thought Painting</button>
+            <button id="new-canvas">New Canvas</button>
+        </div>
+    </div>
+
+    <div class="main hide">
+        <div class="cross">X</div>
+        <div class="left-main">
+            <div id="heading-group">
+                <p id="creators-note-title">Creator's Note</p>
+                <p id="heading">Your Thoughts At This Second Of Your Life Are Unique.</p>
+                <p class="">It Happens Sometimes That Our Mind And Heart Both Gets Into Some Deep Emotion and Becomes Cluttered And Heavy With Thoughts.</p>
+            </div>
+            <div id="content-group">
+                <p style="font-weight: 500;" class="content">So This Thing is For That</p>
+                <p class="content">At Any Time, If You Feel Heavy And Want To Put Your Thoughts At Some Place And Get Free For Sometime.</p>
+                <p class="content">Just Put Your Thoughts Anywhere You Feel Like In Thought Canvas</p>
+                <p class="content">Observe The Sequence Of Your Thoughts In Your Thought Painting</p>
+            </div>
+            <ol id="menu-ul">
+                <p id="menu-line">Use Right Click Menu For: </p>
+                <li>Add Thought Canvas Below</li>
+                <li>Save Your Thought Painting</li>
+                <li>Create New Thought Canvas</li>
+                <li>Download Your Thought Painting As PDF</li>
+            </ol>
+            <p id="end-line">** You Are Perfectly Secure, All Your Thought Paintings Will Be Saved In Your Computer.</p>
+        </div>
+        <div class="right-main">
+            <img id="hero-image" src="https://c4.wallpaperflare.com/wallpaper/103/311/653/space-nebula-astronaut-fragments-astronaut-hd-wallpaper-preview.jpg" alt="brain drawing with colors">
+        </div>
+    </div>
+    
+    <script type="module" src="script.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
 </body>
+
 </html>

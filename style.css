@@ -1,10 +1,12 @@
 body {
     box-sizing: border-box;
-    padding: 20px;
+    padding: 40px 40px;
     margin: 0;
     font-family: "helvetica";
     min-height: 100vh;
-    background-color: whitesmoke;
+    background-color: black;
+    max-width: 100%;
+    position: relative;
 }
 
 h1, p {
@@ -15,19 +17,45 @@ h1, p {
 .container {
     min-height: 100%;
     display: flex;
-    justify-content :space-around;
-    gap: 10px;
-    flex-wrap : wrap;
+    flex-direction: column;
     row-gap: 20px;
-    column-gap: 10px;
+    overflow: auto;           /* Enable scrolling */
+    scrollbar-width: none;    /* Firefox */
+    -ms-overflow-style: none; /* IE/Edge */
+    background: transparent;
+    position: relative;
+}
+
+.tempcontainer {
+  padding: 20px;
+  background-color: black;
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+  row-gap: 20px;
+  overflow: auto;           /* Enable scrolling */
+  scrollbar-width: none;    /* Firefox */
+  -ms-overflow-style: none; /* IE/Edge */
+  justify-content: space-evenly;
+}
+
+.container::-webkit-scrollbar {
+  display: none;
+}
+
+.row {
+    display: flex;
+    justify-content : space-evenly;
+    gap: 5px;
+    min-height: 100%;
+    flex-wrap: wrap;
 }
 
 textarea {
     resize: none;
-    /* background-color: black; */
     overflow-y: scroll;
     scrollbar-width: none;
-    /* text-align: center; */
+    border: 1px solid black;
 }
 
 textarea::-webkit-scrollbar {
@@ -37,4 +65,196 @@ textarea::-webkit-scrollbar {
 textarea:focus {
     outline: none;
     border: none;
+}
+
+.boxtextarea {
+    border: none;
+    /* padding: 8px; */
+    overflow-wrap: break-word;
+    white-space: pre-wrap;
+    box-sizing: border-box;
+    resize: none;
+    font-family: "DM Sans";
+    background: transparent;
+}
+
+
+.custom-context-menu {
+  position: absolute;
+  background-color: #222;
+  color: white;
+  border: 1px solid #555;
+  border-radius: 8px;
+  display: none;
+  z-index: 9999;
+  width: 250px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+  font-family: "DM Sans";
+}
+
+.custom-context-menu ul {
+  list-style: none;
+  margin: 0;
+  padding: 0 0;
+}
+
+.custom-context-menu li {
+  padding: 10px;
+  cursor: pointer;
+}
+
+.custom-context-menu li:hover {
+  background-color: #444;
+}
+
+#message-box {
+    position: fixed;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-size: 16px;
+    opacity: 0; /* Initially hidden */
+    transition: opacity 0.5s, top 0.5s;
+    z-index: 60;
+}
+
+.download-popup {
+  position: fixed;
+  top: 50vh;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: whitesmoke;
+  color: black;
+  border: 1px solid #555;
+  border-radius: 8px;
+  z-index: 9999;
+  width: 400px;
+  min-height: 100px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+  font-family: "DM Sans";
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+  gap: 20px;
+}
+
+.download-popup .header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  font-size: 20px;
+}
+
+.download-popup .header p {
+  max-width: 300px;
+}
+
+.download-popup .buttons {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr;
+  gap: 10px;
+}
+
+.download-popup .buttons button {
+  background-color: black;
+  color: white;
+  height: 35px;
+  font-size: 15px;
+  border-radius: 10px;
+  border: none;
+}
+
+.download-popup .buttons button:hover {
+  background-color: rgb(57, 57, 57);
+}
+
+.fade-in-out {
+    transform: translateX(-50%);
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
+}
+
+.new-canvas-confirm-popup {
+  position: fixed;
+  top: 50vh;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: whitesmoke;
+  color: black;
+  border: 1px solid #555;
+  border-radius: 8px;
+  z-index: 9999;
+  width: 400px;
+  min-height: auto;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+  font-family: "DM Sans";
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+  gap: 20px;
+}
+
+.new-canvas-confirm-popup .header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  font-size: 20px;
+}
+
+.new-canvas-confirm-popup .header p {
+  max-width: 300px;
+}
+
+.new-canvas-confirm-popup .buttons {
+  display: grid;
+  grid-template-columns: 70% 1fr;
+  grid-template-rows: 1fr;
+  gap: 10px;
+}
+
+.new-canvas-confirm-popup .buttons button {
+  background-color: black;
+  color: white;
+  height: 35px;
+  font-size: 15px;
+  border-radius: 10px;
+  border: none;
+}
+
+.new-canvas-confirm-popup .buttons button:hover {
+  background-color: rgb(57, 57, 57);
+}
+
+.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(-50%); /* Slight slide effect */
+}
+
+.hide {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-50%); /* Moves up slightly while fading */
+    pointer-events: none;
+}
+
+.filename-input {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+#filename {
+  height: 35px;
+  font-size: 15px;
+  padding: 0px 10px;
+  border: 1px solid gray;
+}
+
+#filename:focus {
+  border: none;
+  outline: none;
 }

@@ -1,42 +1,364 @@
+class Thought {
+
+    constructor (textarea){
+        this.width = textarea.offsetWidth
+        this.height = textarea.offsetHeight
+        this.content = textarea.value
+        this.fontColor = textarea.style.color
+        this.fontSize = textarea.style.fontSize
+        this.textShadow = textarea.style.textShadow
+        this.textTransform = textarea.style.textTransform
+        this.textAlign = textarea.style.textAlign
+    }
+
+}
+
+let thoughtPainting = getData("thought_painting")
+
+
+/* Extra Small devices (Phones) */
+const phones = 480;
+
+/* Small devices (Tablets) */
+const tablets = 768;
+
+/* Medium devices (Laptops, Small Desktops) */
+const laptops = 992;
+
+/* Large devices (Desktops, Large Screens) */
+const desktops = 1200;
+
+/* Extra Large devices (Large Screens, 4K Displays) */
+const large = 1400;
+
+const extraLarge = 1700;
 
 const totalWidth = window.innerWidth-50;
-const minWidth = 120;
-const oneBoxMaxWidth = 250
+console.log("Total width: ", totalWidth)
+
+let boxPerRow = null
+let minWidth = null
+let oneBoxMaxWidth = null
+let minHeight = 170;
+
+if (totalWidth >= extraLarge){
+    boxPerRow = 7
+    minWidth = 180;
+    oneBoxMaxWidth = 250
+}
+else if (totalWidth >= large) {
+    boxPerRow = 5
+    minWidth = 180;
+    oneBoxMaxWidth = 250;
+}
+else if (totalWidth >= desktops){
+    boxPerRow = 5;
+    minWidth = 180;
+    oneBoxMaxWidth = 250
+}
+else if (totalWidth >= laptops){
+    boxPerRow = 4;
+    minWidth = 180;
+    oneBoxMaxWidth = 250;
+}
+else if (totalWidth >= tablets){
+    boxPerRow = 3;
+    minWidth = 180;
+    oneBoxMaxWidth = 250;
+}
+else if (totalWidth >= phones) {
+    boxPerRow = 3;
+    minWidth = 100;
+    oneBoxMaxWidth = 180;
+}
+else {
+    boxPerRow = 2;
+    minWidth = 140;
+    oneBoxMaxWidth = 150;
+}
+
 const totalHeight = window.innerHeight-50;
-const minHeight = 170;
-const oneBoxMaxHeight = 250;
 
 const minRoundness = 10
 const maxRoundness = 50
 
-const minFontSize = 15
+const minFontSize = 12
 const maxFontSize = 35
 
-const coolColors = [
-    "#6A5ACD", // Slate Blue (Deep but calming)
-    "#4682B4", // Steel Blue (Cool and refreshing)
-    "#5F9EA0", // Cadet Blue (Muted, tranquil tone)
-    "#B0C4DE", // Light Steel Blue (Soft and soothing)
-    "#2F4F4F", // Dark Slate Gray (Deep and mysterious)
-    "#8A2BE2", // Blue Violet (Bold yet relaxing)
-    "#00CED1", // Dark Turquoise (Vibrant but smooth)
-    "#87CEFA", // Light Sky Blue (Airy and fresh)
-    "#556B2F", // Dark Olive Green (Earthy depth)
-    "#4B0082", // Indigo (Dark and enigmatic)
-    "#7B68EE", // Medium Slate Blue (Rich and stylish)
-    "#6495ED", // Cornflower Blue (Bright but easy on eyes)
-    "#468499", // Teal Blue (Balanced depth and freshness)
-    "#2E8B57", // Sea Green (Organic and calming)
-    "#40E0D0", // Turquoise (Refreshing and beach-like)
-    "#3CB371", // Medium Sea Green (Gentle and earthy)
-    "#708090", // Slate Gray (Sophisticated and neutral)
-    "#C0C0C0", // Silver (Soft metallic, smooth look)
-    "#1E90FF", // Dodger Blue (Strong but not overwhelming)
-    "#DC143C"  // Crimson (Dark, passionate energy)
-];
+const saveBtn = document.querySelector("#save-painting")
+const newCanvasBtn = document.querySelector("#new-thought-canvas")
+const addCanvasBtn = document.querySelector("#add-canvas")
+
+const creatorsNoteCard = document.querySelector(".main")
+
+const layoutPopup = document.querySelector(".download-popup")
+const newCanvasConfirmPopup = document.querySelector(".new-canvas-confirm-popup")
+
+import {coolColors, textShadows, fontWeights, fontStyles,
+    textDecorations, textTransforms, textAligns
+} from "./utils.js";
 
 const container = document.querySelector(".container")
 
+const messageBox = document.querySelector("#message-box")
+
+const customMenu = document.querySelector(".custom-context-menu");
+
+// Hide menu when clicking anywhere else
+document.addEventListener("click", function () {
+    customMenu.style.display = "none";
+});    
+
+document.querySelector("#new-canvas-confirm-popup-cross").addEventListener("click", function() {
+    hidePopup(newCanvasConfirmPopup)
+})
+
+showMessage("Welcome To Spray Thoughts.")
+
+if (thoughtPainting.length != 0) {
+        createPaintingFromSavedData(thoughtPainting)
+        showMessage("This where you left your thought painting.")
+    }
+else {
+    showPopup(creatorsNoteCard)
+    createThoughtCanvas(3)
+    showMessage("Thought Canvas is Ready.")
+    }
+addExpandingEventListenersToTextareas() 
+
+// Event listener for the creator's note's cross
+document.querySelector(".main .cross").addEventListener("click", function() {
+    creatorsNoteCard.classList.add("hide")
+    
+})
+
+addCanvasBtn.addEventListener("click", function(event) {
+    createThoughtCanvas(3)
+    addExpandingEventListenersToTextareas()
+    showMessage("Thought canvas added.")
+})    
+
+saveBtn.addEventListener("click", function() {
+    saveThoughtPainting()
+    showMessage("Thought Painting Saved Successfully.")
+})
+
+newCanvasBtn.addEventListener("click", function() {
+    showPopup(newCanvasConfirmPopup)
+})
+
+// No context menu on top of the creator's note card
+creatorsNoteCard.addEventListener("contextmenu", (event) => event.preventDefault());
+
+document.querySelector("#new-canvas-download-canvas").addEventListener("click", function() {
+    hidePopup(newCanvasConfirmPopup)
+    showPopup(layoutPopup)
+})
+
+document.querySelector("#new-canvas").addEventListener("click", function() {
+    hidePopup(newCanvasConfirmPopup)
+    container.innerHTML = ""
+    thoughtPainting = []
+    // createThoughtCanvas(3)
+    localStorage.clear()
+    window.location.reload()
+})
+
+document.querySelector("#download-btn").addEventListener("click", function() {
+    showPopup(layoutPopup);
+})
+
+document.querySelector("#download-popup-cross").addEventListener("click", function() {
+    hidePopup(layoutPopup)
+})
+
+document.querySelectorAll(".layout-button").forEach((button) => {
+    button.addEventListener("click", function() {
+        let layout = button.getAttribute("data-layout")
+        const fileNameInput = document.querySelector("#filename")
+        let fileName = fileNameInput.value.replace("/ /g", "_")
+        layoutPopup.classList.add("hide")
+        layoutPopup.classList.remove("show")
+        downloadThoughtPainting(layout, fileName)
+        fileNameInput.value = "Thought_painting"
+    })
+})
+
+container.addEventListener("contextmenu", function (e) {
+  e.preventDefault();  
+  
+  // Get menu dimensions
+  const menuWidth = customMenu.offsetWidth;
+  const menuHeight = customMenu.offsetHeight;
+
+  // Get viewport dimensions
+  const windowWidth = window.innerWidth;
+  const windowHeight = (window.innerHeight < document.documentElement.scrollHeight) ? document.documentElement.scrollHeight : window.innerHeight;
+  
+  // Calculate safe positions
+  let posX = e.pageX;
+  let posY = e.pageY;
+  
+  // Adjust position if too close to right or bottom edge
+  if (e.pageX + menuWidth > windowWidth) {
+      posX = windowWidth - menuWidth - 10; // 10px padding from edge  
+    }  
+    
+    if (e.pageY + menuHeight > windowHeight) {
+        posY = windowHeight - menuHeight - 10;  
+    }  
+    
+    customMenu.style.left = `${posX}px`;
+    customMenu.style.top = `${posY}px`;
+    customMenu.style.display = "block";
+});  
+
+function hidePopup(popup){
+    popup.classList.add("hide")
+    popup.classList.remove("show")
+}
+
+function showPopup(popup){
+    popup.classList.add("show")
+    popup.classList.remove("hide")
+}
+
+function downloadThoughtPainting(layout, filename) {
+    const { jsPDF } = window.jspdf;
+    let doc = new jsPDF({
+        orientation: layout,
+        unit: "px",
+        format: "a4",
+    });
+
+    const tempContainer = document.createElement("div");
+    tempContainer.classList.add("tempcontainer");
+    container.style.visibility = "hidden"
+    container.style.position = "absolute"
+
+    document.body.appendChild(tempContainer); // Append to body temporarily
+
+    let pageHeight = doc.internal.pageSize.getHeight();
+    let yPosition = 10; // Initial Y position for content on the page
+
+    // Set black background on first page before adding any content
+    doc.setFillColor(0, 0, 0);
+    doc.rect(0, 0, doc.internal.pageSize.getWidth(), pageHeight, "F");
+
+    thoughtPainting.forEach((row) => {
+        let newRow = document.createElement("div");
+        newRow.classList.add("row");
+        newRow.style.gap = getString(20)
+
+        row.forEach((thought) => {
+            let newThought = document.createElement("div");
+            newThought.classList.add("boxtextarea")
+            newThought.textContent = thought.content;
+            newThought.style.width = getString(thought.width);
+            newThought.style.maxWidth = getString(thought.width);
+            newThought.style.height = getString(thought.height);
+            newThought.style.minHeight = getString(thought.height);
+            newThought.style.fontSize = thought.fontSize;
+            newThought.style.textAlign = thought.textAlign;
+            newThought.style.color = thought.fontColor;
+            newThought.style.textShadow = thought.textShadow;
+            newThought.style.textTransform = thought.textTransform;
+            newRow.appendChild(newThought);
+        });
+
+        tempContainer.appendChild(newRow);
+
+        html2canvas(newRow, {
+            scale: 3,
+            useCORS: true,
+            backgroundColor: null,
+        }).then((canvas) => {
+            let imageData = canvas.toDataURL("image/png");
+            let imgHeight = (canvas.height * doc.internal.pageSize.getWidth()) / canvas.width;
+
+            if (yPosition + imgHeight > pageHeight) {
+                doc.addPage(); // Add new page when content overflows
+                doc.setFillColor(0, 0, 0); // Set background to black
+                doc.rect(0, 0, doc.internal.pageSize.getWidth(), doc.internal.pageSize.getHeight(), "F");
+                yPosition = 10; // Reset Y position for new page
+            }
+
+            doc.addImage(imageData, "PNG", 10, yPosition, doc.internal.pageSize.getWidth() - 20, imgHeight);
+            yPosition += imgHeight + 10; // Move down for next row
+        });
+    });
+
+    setTimeout(() => {
+        doc.save(`${filename}.pdf`); // Ensure all async captures are completed before saving
+        document.body.removeChild(tempContainer);
+        container.style.visibility = "visible"
+        container.style.position = "relative"
+    }, 3000);
+
+    showMessage("Download In Progress.")
+};
+
+function saveData(key, data) {
+    localStorage.setItem(key, JSON.stringify(data))    
+}
+
+function getData(key){
+    console.log("Getting data")
+    let dataString = localStorage.getItem(key)
+    if (dataString === null){
+        console.log(`Data : ${dataString}, returning the empty array`)
+        return []
+    } else {
+        // console.log(`Data : ${dataString}, returning the saved data.`)
+        return JSON.parse(dataString)
+    }
+}
+
+function showMessage(message){
+
+    messageBox.textContent = message
+    messageBox.style.opacity = "1"
+    messageBox.style.top = getString(10)
+
+    setTimeout(() => {
+        messageBox.style.opacity = "0"
+        messageBox.style.top = getString(0)
+    }, 3000)
+}
+
+function createPaintingFromSavedData(data){
+    console.log("Creating painting from the saved data.")
+    container.innerHTML = ""
+    data.forEach((row, rowIndex) =>  {
+        // console.log(row)
+        const newRow = insertRow();
+        row.forEach((thought, index) => {
+            // console.log(thought)
+            const newTextarea = document.createElement("textarea")
+            newTextarea.classList = "boxtextarea"
+            newTextarea.width = getString(thought.width)
+            newTextarea.minWidth = getString(thought.width)
+            newTextarea.height = getString(thought.height)
+            newTextarea.value = thought.content
+            newTextarea.style.color = thought.fontColor
+            newTextarea.style.fontSize = thought.fontSize
+            newTextarea.style.textShadow = thought.textShadow
+            newTextarea.style.textTransform = thought.textTransform
+            newTextarea.style.textAlign = thought.textAlign
+            newTextarea.spellcheck = false
+            newTextarea.style.minHeight = getString(thought.height)
+            newTextarea.style.maxWidth = getString(thought.width)
+            newTextarea.setAttribute("row-number", `${rowIndex}`)
+            newTextarea.setAttribute("thought-nubmer", `${index}`)
+            newRow.appendChild(newTextarea)
+            // console.log(newTextarea.fontColor)
+        });
+        // container.appendChild(newRow)
+    });
+    console.log("render completed")
+    addExpandingEventListenersToTextareas()
+}
+ 
 // Function to get a random width
 function getRandom(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min
@@ -47,59 +369,144 @@ function getString(number) {
 }
 
 function getRandomColor() {
-    let max = coolColors.length;
-    return coolColors[Math.floor(Math.random() * max)]
+    let max = coolColors.length-1;
+    return coolColors[getRandom(0, max)]
 }
 
-function insertBox(width, height) {
+function getRandomTextShadow() {
+    let max = textShadows.length-1
+    return textShadows[getRandom(0, max)]
+}
+
+function getRandomFontWeight() {
+    let max = fontWeights.length-1
+    return fontWeights[getRandom(0, max)]
+}
+
+function getRandomFontStyle() {
+    let max = fontStyles.length-1
+    return fontStyles[getRandom(0, max)]
+}
+
+function getRandomTextDecoration() {
+    let max = textDecorations.length-1
+    return textDecorations[getRandom(0, max)]
+}
+
+function getRandomTextTransforms() {
+    let max = textTransforms.length-1
+    return textTransforms[getRandom(0, max)]
+}
+
+function getRandomTextAlign() {
+    let max = textAligns.length-1
+    return textAligns[getRandom(0, max)]
+}
+
+function insertRow() {
+    const row = document.createElement("div")
+    row.classList = "row"
+    container.appendChild(row)
+    return row
+}
+
+function insertBox(width, height, row) {
     const box = document.createElement("div")
     box.style.maxWidth = width;
     box.style.width = width;
     // box.style.height = height;
     box.style.minHeight = height;
     let color = getRandomColor()
-    box.style.border = `2px solid lightgray`;
-    let randomBorderRadius = getString(getRandom(minRoundness, maxRoundness))
-    box.style.borderRadius = randomBorderRadius
+    // box.style.border = `1px solid lightgray`;
+    // let randomBorderRadius = getString(getRandom(minRoundness, maxRoundness))
+    // box.style.borderRadius = randomBorderRadius
 
     const inputInsideBox = document.createElement("textarea")
+    inputInsideBox.classList = "boxtextarea"
     inputInsideBox.style.color = color
     inputInsideBox.style.fontSize = getString(getRandom(minFontSize, maxFontSize))
-    inputInsideBox.style.borderRadius = randomBorderRadius
-    inputInsideBox.style.border = "none"
+    // inputInsideBox.style.borderRadius = randomBorderRadius
     inputInsideBox.style.maxWidth = width
     inputInsideBox.style.width = width
-    inputInsideBox.style.height = height
-    inputInsideBox.style.maxHeight = height
-    inputInsideBox.style.padding = "10px"
-    inputInsideBox.style.resize = "both"
-    inputInsideBox.style.overflowWrap = "break-word"
-    inputInsideBox.style.whiteSpace = "pre-wrap"
-    inputInsideBox.style.boxSizing = "border-box"
-    inputInsideBox.style.resize = "none"
+    // inputInsideBox.style.height = height
+    inputInsideBox.style.minHeight = height
+    inputInsideBox.spellcheck = false
+    inputInsideBox.style.textShadow = getRandomTextShadow()
+    // inputInsideBox.style.fontFamily = getRandomFont()
+    // inputInsideBox.style.fontWeight = getRandomFontWeight()
+    // inputInsideBox.style.fontStyle = getRandomFontStyle()
+    // inputInsideBox.style.textDecoration = getRandomTextDecoration()
+    inputInsideBox.style.textTransform = getRandomTextTransforms()
+    inputInsideBox.style.textAlign = getRandomTextAlign()
+    // inputInsideBox.placeholder = "why are they so cool?"
+    // inputInsideBox.style.transform = `rotate(${getRandom(0, 50)}deg)`
 
-    box.appendChild(inputInsideBox)
-
-    container.appendChild(box);
+    row.appendChild(inputInsideBox);
+    return inputInsideBox
 }
 
-function putOneRow(){
+function createRow(debug=false){
+    let row = insertRow()
     let tempTotalWidth = totalWidth;
+    let height = getString(minHeight)
 
-    while (true) {
-        if ( tempTotalWidth <= 100) break;
-        // let height = getString(getRandom(minHeight, oneBoxMaxHeight))
-        let height = getString(minHeight)
+    for (let i = 1; i <= boxPerRow; i++) {
         if (tempTotalWidth <= minWidth){
-            insertBox(getString(tempTotalWidth), height);
-            break;
+            let nowWidth = getString(tempTotalWidth)
+            insertBox(nowWidth, height, row)
+            if (debug) console.log(`Condition 1 - Box ${i} - ${tempTotalWidth}`);
+            continue;
         }
         let width = getRandom(minWidth, oneBoxMaxWidth)
-        insertBox(getString(width), height)
+        if (tempTotalWidth - width <= minWidth){
+            insertBox(getString(width), height, row)
+            if (debug) console.log(`Condition 2 - Box ${i} - ${tempTotalWidth}`);
+            break;
+        }
+        insertBox(getString(width), height, row)
         tempTotalWidth -= width
+        if (debug) console.log(`Box ${i} - ${tempTotalWidth}`);
+    }
+    return row
+}
+
+function createThoughtCanvas(numberOfRows){
+    for (let i = 0; i < numberOfRows; i++){
+        createRow()
     }
 }
 
-putOneRow()
-putOneRow()
-putOneRow()
+
+function addExpandingEventListenersToTextareas() {
+    document.querySelectorAll("textarea").forEach(element => {
+    element.addEventListener("input", () => {
+        element.style.height = "auto"; // Reset height
+        element.style.height = element.scrollHeight + "px"; // Expand to fit content
+        saveThoughtPainting()
+    });
+    });
+}
+
+
+function saveThoughtPainting(){
+    // console.log(thoughtPainting)
+    thoughtPainting = []
+    let allRows = document.querySelectorAll(".row")
+    // console.log(allRows)
+    for (let row of allRows) {
+        let thoughts = row.querySelectorAll("textarea")
+        // console.log(thoughts)
+        let paintingRow = []
+        for (let thought of thoughts){
+            // if (thought.value) console.log(thought.value)
+            let thoughtObject = new Thought(thought)
+            paintingRow.push(thoughtObject)
+            // console.log(thoughtObject)
+        }
+        thoughtPainting.push(paintingRow)
+    }
+
+    // console.log(thoughtPainting)
+    saveData("thought_painting", thoughtPainting)
+}
+
