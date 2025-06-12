@@ -1,17 +1,20 @@
 /* Extra Small devices (Phones) */
 @media (max-width: 600px) {
     .main {
-        width: 90%;
+        width: 85%;
         height: auto;
+        margin: 10px 0px;
         grid-template-columns: 1fr;
-        grid-template-rows: 1fr 300px;
+        grid-template-rows: 1fr 1px;
         top: 50%;
     }
-    /* .right-main {
+    .right-main {
         display: none;
-    } */
+        height: 1px;
+    }
     .left-main {
-        padding: 20px 30px;
+        padding: 20px 20px;
+        height: auto;
     }
     .new-canvas-confirm-popup, .download-popup {
         /* top:  */

@@ -233,6 +233,7 @@ textarea:focus {
 .show {
     opacity: 1;
     transform: translateX(-50%) translateY(-50%); /* Slight slide effect */
+    pointer-events: auto;
 }
 
 .hide {
@@ -257,4 +258,22 @@ textarea:focus {
 #filename:focus {
   border: none;
   outline: none;
+}
+
+.mobile-menu {
+  position: fixed;
+  top: 20px;
+  left: 95%;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  width: 15px;
+  align-items: center;
+}
+
+.dot {
+  width: 5px;
+  height: 5px;
+  background-color: gray;
+  border-radius: 50px;
 }

@@ -36,6 +36,8 @@ const extraLarge = 1700;
 const totalWidth = window.innerWidth-50;
 console.log("Total width: ", totalWidth)
 
+const mobileMenu = document.querySelector(".mobile-menu")
+
 let boxPerRow = null
 let minWidth = null
 let oneBoxMaxWidth = null
@@ -70,11 +72,13 @@ else if (totalWidth >= phones) {
     boxPerRow = 3;
     minWidth = 100;
     oneBoxMaxWidth = 180;
+    showPopup(mobileMenu)
 }
 else {
     boxPerRow = 2;
     minWidth = 140;
     oneBoxMaxWidth = 150;
+    showPopup(mobileMenu)
 }
 
 const totalHeight = window.innerHeight-50;
@@ -183,6 +187,34 @@ document.querySelectorAll(".layout-button").forEach((button) => {
         fileNameInput.value = "Thought_painting"
     })
 })
+
+mobileMenu.addEventListener("click", function (e) {
+
+    //Prevent default behavior
+    e.preventDefault();
+
+    // Get menu dimensions
+    const menuWidth = customMenu.offsetWidth;
+    const menuHeight = customMenu.offsetHeight;
+
+    // Get viewport dimensions
+    const windowWidth = window.innerWidth;
+    const windowHeight = document.documentElement.clientHeight;
+
+    // Calculate safe positions (left side of the click)
+    let posX = e.pageX - menuWidth; // Position to the left
+    let posY = e.pageY;
+
+    // Ensure menu does not go out of bounds
+    if (posX < 10) posX = 10; // Keep some padding from the left edge
+    if (posY + menuHeight > windowHeight) posY = windowHeight - menuHeight - 10; // Prevent overflow at the bottom
+
+    // Apply positioning
+    customMenu.style.left = `${posX}px`;
+    customMenu.style.top = `${posY}px`;
+    customMenu.style.display = "block";
+});
+
 
 container.addEventListener("contextmenu", function (e) {
   e.preventDefault();  
