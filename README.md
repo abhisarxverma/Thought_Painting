@@ -4,6 +4,7 @@ A No Login, Secure, Simple, healing web app where you can *drop heavy thoughts* 
 
 > “Even when I write, I hide things between the lines.”
 
+### Live site - [Visit Thought Painting](https://thoughtpainting.netlify.app/)
 ---
 
 ## ✨ What is Thought Painting?
