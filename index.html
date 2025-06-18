@@ -5,10 +5,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Thought Painting</title>
-    <link rel="apple-touch-icon" sizes="180x180" href="./apple-touch-icon.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="./favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="./favicon-16x16.png">
-    <link rel="manifest" href="./site.webmanifest">
+    <link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon-16x16.png">
+    <link rel="manifest" href="assets/site.webmanifest">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -22,6 +22,7 @@
 
 <body>
     <div class="container"></div>
+    <audio id="bg-audio" src="last_of_us_theme.mp3" preload="auto"></audio>
     <div class="mobile-menu hide">
         <div class="dot"></div>
         <div class="dot"></div>
@@ -35,6 +36,8 @@
             <li id="save-painting">Save Your Thought Painting</li>
             <li id="new-thought-canvas">New Thought Canvas</li>
             <li id="download-btn">Download your thought painting as PDF</li>
+            <li id="stop-music">Pause Background Music</li>
+            <li id="set-volume">Set Background Music Volume</li>
         </ul>
     </div>
 
@@ -64,6 +67,16 @@
         </div>
     </div>
 
+    <div class="music-volume-popup fade-in-out hide">
+        <div class="header">
+            <p>Set Background Music Volume</p>
+            <i class="fa-solid fa-xmark" id="music-volume-popup-cross" style="color: #000000;"></i>
+        </div>
+        <div class="range-input-div">
+            <input id="music-volume-input" type="range" min="0" max="1" step="0.1" value="0.5" />
+        </div>
+    </div>
+
     <div class="main hide">
         <div class="cross">X</div>
         <div class="left-main">
@@ -77,6 +90,7 @@
                 <p class="content">At Any Time, If You Feel Heavy And Want To Put Your Thoughts At Some Place And Get Free For Sometime.</p>
                 <p class="content">Just Put Your Thoughts Anywhere You Feel Like In Thought Canvas</p>
                 <p class="content">Observe The Sequence Of Your Thoughts In Your Thought Painting</p>
+                <p class="content">Background Music is Last of Us Game theme song.</p>
             </div>
             <ol id="menu-ul">
                 <p id="menu-line">Use Right Click Menu For: </p>

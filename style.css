@@ -7,6 +7,18 @@ body {
     background-color: black;
     max-width: 100%;
     position: relative;
+    box-shadow: 0px 0px 10px 3px lightgray inset;
+    transition: box-shadow 5s ease-in;
+    animation: bodyShadow ease-in infinite;
+}
+
+@keyframes bodyShadow {
+  0% {
+    box-shadow: 1px 0px 10px 3px lightgray inset;
+  }
+  100% {
+    box-shadow: 0px 1px 10px 3px lightgray inset;
+  }
 }
 
 h1, p {
@@ -179,6 +191,37 @@ textarea:focus {
     transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
 }
 
+.music-volume-popup {
+  position: fixed;
+  top: 50vh;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: whitesmoke;
+  color: black;
+  border: 1px solid #555;
+  border-radius: 8px;
+  z-index: 9999;
+  width: 400px;
+  min-height: auto;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+  font-family: "DM Sans";
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+  gap: 20px;
+}
+
+.music-volume-popup .header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  font-size: 20px;
+}
+
+.music-volume-popup .header p {
+  max-width: 300px;
+}
+
 .new-canvas-confirm-popup {
   position: fixed;
   top: 50vh;
@@ -253,10 +296,11 @@ textarea:focus {
   font-size: 15px;
   padding: 0px 10px;
   border: 1px solid gray;
+  border-radius: 7px;
 }
 
 #filename:focus {
-  border: none;
+  border: 1px solid black;
   outline: none;
 }
 
@@ -276,4 +320,8 @@ textarea:focus {
   height: 5px;
   background-color: gray;
   border-radius: 50px;
+}
+
+#music-volume-input {
+  width: 100%;
 }

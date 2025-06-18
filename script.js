@@ -108,6 +108,39 @@ const messageBox = document.querySelector("#message-box")
 
 const customMenu = document.querySelector(".custom-context-menu");
 
+const pauseMusicButton = document.querySelector("#stop-music")
+
+const audio = document.getElementById("bg-audio");
+let audioPlaying = true;
+const volumePopup = document.querySelector(".music-volume-popup")
+const volumeInput = document.querySelector("#music-volume-input")
+const volumePopupCross = document.querySelector("#music-volume-popup-cross")
+const setVolumeBtn = document.querySelector("#set-volume")
+
+setVolumeBtn.addEventListener("click", function() {
+    showPopup(volumePopup)
+})
+
+volumePopupCross.addEventListener("click", function() {
+    hidePopup(volumePopup)
+})
+
+volumeInput.addEventListener("input", function() {
+    let input = volumeInput.value
+    audio.volume = input
+})
+
+
+audio.volume = 0.1;
+
+audio.play().catch(err => {
+    console.log("Auto-play blocked by browser:", err);
+});
+
+pauseMusicButton.addEventListener("click", function() {
+    toggleAudio();
+})
+
 // Hide menu when clicking anywhere else
 document.addEventListener("click", function () {
     customMenu.style.display = "none";
@@ -133,7 +166,6 @@ addExpandingEventListenersToTextareas()
 // Event listener for the creator's note's cross
 document.querySelector(".main .cross").addEventListener("click", function() {
     creatorsNoteCard.classList.add("hide")
-    
 })
 
 addCanvasBtn.addEventListener("click", function(event) {
@@ -201,13 +233,15 @@ mobileMenu.addEventListener("click", function (e) {
     const windowWidth = window.innerWidth;
     const windowHeight = document.documentElement.clientHeight;
 
-    // Calculate safe positions (left side of the click)
-    let posX = e.pageX - menuWidth; // Position to the left
+    let posX = e.pageX;
     let posY = e.pageY;
 
-    // Ensure menu does not go out of bounds
-    if (posX < 10) posX = 10; // Keep some padding from the left edge
-    if (posY + menuHeight > windowHeight) posY = windowHeight - menuHeight - 10; // Prevent overflow at the bottom
+    if (posX + menuWidth > windowWidth) {
+    posX = Math.max(windowWidth - menuWidth - 30, 30);
+    }
+    if (posY + menuHeight > windowHeight) {
+    posY = Math.max(windowHeight - menuHeight - 10, 10);
+    }
 
     // Apply positioning
     customMenu.style.left = `${posX}px`;
@@ -218,32 +252,39 @@ mobileMenu.addEventListener("click", function (e) {
 
 container.addEventListener("contextmenu", function (e) {
   e.preventDefault();  
-  
-  // Get menu dimensions
+
+  customMenu.style.visibility = "hidden";
+  customMenu.style.display = "block";
+
   const menuWidth = customMenu.offsetWidth;
   const menuHeight = customMenu.offsetHeight;
 
-  // Get viewport dimensions
-  const windowWidth = window.innerWidth;
-  const windowHeight = (window.innerHeight < document.documentElement.scrollHeight) ? document.documentElement.scrollHeight : window.innerHeight;
-  
-  // Calculate safe positions
+  customMenu.style.display = "none";
+  customMenu.style.visibility = "visible";
+
+  const windowWidth = window.innerWidth-20;
+  const pageHeight = Math.max(
+    document.documentElement.scrollHeight,
+    document.body.scrollHeight,
+    window.innerHeight
+  );
+
   let posX = e.pageX;
   let posY = e.pageY;
-  
-  // Adjust position if too close to right or bottom edge
-  if (e.pageX + menuWidth > windowWidth) {
-      posX = windowWidth - menuWidth - 10; // 10px padding from edge  
-    }  
-    
-    if (e.pageY + menuHeight > windowHeight) {
-        posY = windowHeight - menuHeight - 10;  
-    }  
-    
-    customMenu.style.left = `${posX}px`;
-    customMenu.style.top = `${posY}px`;
-    customMenu.style.display = "block";
-});  
+
+  if (posX + menuWidth > windowWidth) {
+    posX = Math.max(windowWidth - menuWidth - 10, 10);
+  }
+
+  if (posY + menuHeight > pageHeight) {
+    posY = Math.max(pageHeight - menuHeight - 10, 10);
+  }
+
+  customMenu.style.left = `${posX}px`;
+  customMenu.style.top = `${posY}px`;
+  customMenu.style.display = "block";
+});
+
 
 function hidePopup(popup){
     popup.classList.add("hide")
@@ -542,3 +583,16 @@ function saveThoughtPainting(){
     saveData("thought_painting", thoughtPainting)
 }
 
+
+function toggleAudio() {
+    if (audioPlaying) {
+        audioPlaying = false
+        audio.pause()
+        pauseMusicButton.textContent = "Play Background Music"
+    }
+    else {
+        audioPlaying = true
+        audio.play()
+        pauseMusicButton.textContent = "Pause Background Music"
+    }
+}
