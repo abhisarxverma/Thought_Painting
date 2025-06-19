@@ -134,7 +134,7 @@ volumeInput.addEventListener("input", function() {
 audio.volume = 0.1;
 
 audio.play().catch(err => {
-    console.log("Auto-play blocked by browser:", err);
+    toggleAudio()
 });
 
 pauseMusicButton.addEventListener("click", function() {
