@@ -215,7 +215,7 @@ document.querySelectorAll(".layout-button").forEach((button) => {
         let fileName = fileNameInput.value.replace("/ /g", "_")
         layoutPopup.classList.add("hide")
         layoutPopup.classList.remove("show")
-        downloadThoughtPainting(layout, fileName)
+        downloadFullWebsiteAsPDF(fileName, layout)
         fileNameInput.value = "Thought_painting"
     })
 })
@@ -296,80 +296,165 @@ function showPopup(popup){
     popup.classList.remove("hide")
 }
 
-function downloadThoughtPainting(layout, filename) {
+
+// async function downloadFullWebsiteAsPDF(filename = "website_snapshot") {
+//     const { jsPDF } = window.jspdf;
+//     const scaleFactor = 2;
+
+//     // Step 1: Replace all <textarea> with <div> for full text rendering
+//     const textareas = document.querySelectorAll("textarea");
+//     textareas.forEach((ta) => {
+//         const div = document.createElement("div");
+//         div.textContent = ta.value;
+//         const style = window.getComputedStyle(ta);
+//         for (const prop of style) div.style[prop] = style.getPropertyValue(prop);
+//         div.style.whiteSpace = "pre-wrap";
+//         div.style.wordBreak = "break-word";
+//         div.style.border = style.border || "1px solid #ccc";
+//         div.style.background = style.background || "#fff";
+//         ta.parentNode.insertBefore(div, ta);
+//         ta.style.display = "none";
+//     });
+
+//     window.scrollTo(0, 0);
+
+//     const body = document.body;
+//     body.style.boxShadow = "none";
+//     const html = document.documentElement;
+//     const totalWidth = Math.max(body.scrollWidth, html.scrollWidth);
+//     const totalHeight = Math.max(body.scrollHeight, html.scrollHeight);
+
+//     const canvas = await html2canvas(document.body, {
+//         scale: scaleFactor,
+//         width: totalWidth,
+//         height: totalHeight,
+//         useCORS: true,
+//         allowTaint: true,
+//         backgroundColor: null, // Important for transparent background
+//     });
+
+//     const imageData = canvas.toDataURL("image/png");
+
+//     const pdf = new jsPDF("p", "mm", "a4");
+//     const pageWidth = pdf.internal.pageSize.getWidth();
+//     const pageHeight = pdf.internal.pageSize.getHeight();
+
+//     const imgProps = pdf.getImageProperties(imageData);
+//     const imgWidth = pageWidth;
+//     const imgHeight = (imgProps.height * imgWidth) / imgProps.width;
+
+//     let heightLeft = imgHeight;
+//     let position = 0;
+
+//     const drawPage = () => {
+//         pdf.setFillColor(0, 0, 0); // black background
+//         pdf.rect(0, 0, pageWidth, pageHeight, "F");
+//         pdf.addImage(imageData, "PNG", 0, position, imgWidth, imgHeight);
+//     };
+
+//     drawPage();
+//     heightLeft -= pageHeight;
+
+//     while (heightLeft > 0) {
+//         position = heightLeft - imgHeight;
+//         pdf.addPage();
+//         drawPage();
+//         heightLeft -= pageHeight;
+//     }
+
+//     pdf.save(`${filename}.pdf`);
+
+//     // Restore textareas after capture
+//     textareas.forEach((ta) => {
+//         ta.style.display = "block";
+//         if (ta.previousSibling && ta.previousSibling.nodeName === "DIV") {
+//             ta.parentNode.removeChild(ta.previousSibling);
+//         }
+//     });
+
+//     body.style.boxShadow = "0px 0px 10px 3px lightgray inset";
+// }
+
+async function downloadFullWebsiteAsPDF(filename = "website_snapshot", layout = "portrait") {
     const { jsPDF } = window.jspdf;
-    let doc = new jsPDF({
-        orientation: layout,
-        unit: "px",
-        format: "a4",
+    const scaleFactor = 2;
+
+    // Convert layout string to jsPDF orientation: "portrait" or "landscape"
+    const orientation = layout.toLowerCase() === "landscape" ? "l" : "p";
+
+    const textareas = document.querySelectorAll("textarea");
+    textareas.forEach((ta) => {
+        const div = document.createElement("div");
+        div.textContent = ta.value;
+        const style = window.getComputedStyle(ta);
+        for (const prop of style) div.style[prop] = style.getPropertyValue(prop);
+        div.style.whiteSpace = "pre-wrap";
+        div.style.wordBreak = "break-word";
+        // div.style.border = style.border || "1px solid #ccc";
+        div.style.background = style.background || "#fff";
+        ta.parentNode.insertBefore(div, ta);
+        ta.style.display = "none";
     });
 
-    const tempContainer = document.createElement("div");
-    tempContainer.classList.add("tempcontainer");
-    container.style.visibility = "hidden"
-    container.style.position = "absolute"
+    window.scrollTo(0, 0);
 
-    document.body.appendChild(tempContainer); // Append to body temporarily
+    const body = document.body;
+    body.style.boxShadow = "none"
+    const html = document.documentElement;
+    const totalWidth = Math.max(body.scrollWidth, html.scrollWidth);
+    const totalHeight = Math.max(body.scrollHeight, html.scrollHeight);
 
-    let pageHeight = doc.internal.pageSize.getHeight();
-    let yPosition = 10; // Initial Y position for content on the page
-
-    // Set black background on first page before adding any content
-    doc.setFillColor(0, 0, 0);
-    doc.rect(0, 0, doc.internal.pageSize.getWidth(), pageHeight, "F");
-
-    thoughtPainting.forEach((row) => {
-        let newRow = document.createElement("div");
-        newRow.classList.add("row");
-        newRow.style.gap = getString(20)
-
-        row.forEach((thought) => {
-            let newThought = document.createElement("div");
-            newThought.classList.add("boxtextarea")
-            newThought.textContent = thought.content;
-            newThought.style.width = getString(thought.width);
-            newThought.style.maxWidth = getString(thought.width);
-            newThought.style.height = getString(thought.height);
-            newThought.style.minHeight = getString(thought.height);
-            newThought.style.fontSize = thought.fontSize;
-            newThought.style.textAlign = thought.textAlign;
-            newThought.style.color = thought.fontColor;
-            newThought.style.textShadow = thought.textShadow;
-            newThought.style.textTransform = thought.textTransform;
-            newRow.appendChild(newThought);
-        });
-
-        tempContainer.appendChild(newRow);
-
-        html2canvas(newRow, {
-            scale: 3,
-            useCORS: true,
-            backgroundColor: null,
-        }).then((canvas) => {
-            let imageData = canvas.toDataURL("image/png");
-            let imgHeight = (canvas.height * doc.internal.pageSize.getWidth()) / canvas.width;
-
-            if (yPosition + imgHeight > pageHeight) {
-                doc.addPage(); // Add new page when content overflows
-                doc.setFillColor(0, 0, 0); // Set background to black
-                doc.rect(0, 0, doc.internal.pageSize.getWidth(), doc.internal.pageSize.getHeight(), "F");
-                yPosition = 10; // Reset Y position for new page
-            }
-
-            doc.addImage(imageData, "PNG", 10, yPosition, doc.internal.pageSize.getWidth() - 20, imgHeight);
-            yPosition += imgHeight + 10; // Move down for next row
-        });
+    const canvas = await html2canvas(document.body, {
+        scale: scaleFactor,
+        width: totalWidth,
+        height: totalHeight,
+        useCORS: true,
+        allowTaint: true,
+        backgroundColor: null,
     });
 
-    setTimeout(() => {
-        doc.save(`${filename}.pdf`); // Ensure all async captures are completed before saving
-        document.body.removeChild(tempContainer);
-        container.style.visibility = "visible"
-        container.style.position = "relative"
-    }, 3000);
+    const imageData = canvas.toDataURL("image/png");
 
-    showMessage("Download In Progress.")
-};
+    const pdf = new jsPDF(orientation, "mm", "a4");
+    const pageWidth = pdf.internal.pageSize.getWidth();
+    const pageHeight = pdf.internal.pageSize.getHeight();
+
+    const imgProps = pdf.getImageProperties(imageData);
+    const imgWidth = pageWidth;
+    const imgHeight = (imgProps.height * imgWidth) / imgProps.width;
+
+    let heightLeft = imgHeight;
+    let position = 0;
+
+    const drawPage = () => {
+        pdf.setFillColor(0, 0, 0);
+        pdf.rect(0, 0, pageWidth, pageHeight, "F");
+        pdf.addImage(imageData, "PNG", 0, position, imgWidth, imgHeight);
+    };
+
+    drawPage();
+    heightLeft -= pageHeight;
+
+    while (heightLeft > 0) {
+        position = heightLeft - imgHeight;
+        pdf.addPage();
+        drawPage();
+        heightLeft -= pageHeight;
+    }
+
+    pdf.save(`${filename}.pdf`);
+
+    textareas.forEach((ta) => {
+        ta.style.display = "block";
+        if (ta.previousSibling && ta.previousSibling.nodeName === "DIV") {
+            ta.parentNode.removeChild(ta.previousSibling);
+        }
+    });
+
+    body.style.boxShadow = "0px 0px 10px 3px lightgray inset";
+
+}
+
 
 function saveData(key, data) {
     localStorage.setItem(key, JSON.stringify(data))    
