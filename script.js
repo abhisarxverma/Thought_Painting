@@ -42,6 +42,7 @@ let boxPerRow = null
 let minWidth = null
 let oneBoxMaxWidth = null
 let minHeight = 170;
+let numberOfRows = 3;
 
 if (totalWidth >= extraLarge){
     boxPerRow = 7
@@ -78,6 +79,7 @@ else {
     boxPerRow = 2;
     minWidth = 140;
     oneBoxMaxWidth = 150;
+    numberOfRows = 3
     showPopup(mobileMenu)
 }
 
@@ -117,6 +119,10 @@ const volumeInput = document.querySelector("#music-volume-input")
 const volumePopupCross = document.querySelector("#music-volume-popup-cross")
 const setVolumeBtn = document.querySelector("#set-volume")
 
+document.addEventListener("click", function() {
+    customMenu.style.display = "none"
+})
+
 setVolumeBtn.addEventListener("click", function() {
     showPopup(volumePopup)
 })
@@ -140,11 +146,7 @@ audio.play().catch(err => {
 pauseMusicButton.addEventListener("click", function() {
     toggleAudio();
 })
-
-// Hide menu when clicking anywhere else
-document.addEventListener("click", function () {
-    customMenu.style.display = "none";
-});    
+   
 
 document.querySelector("#new-canvas-confirm-popup-cross").addEventListener("click", function() {
     hidePopup(newCanvasConfirmPopup)
@@ -222,31 +224,17 @@ document.querySelectorAll(".layout-button").forEach((button) => {
 
 mobileMenu.addEventListener("click", function (e) {
 
-    //Prevent default behavior
-    e.preventDefault();
-
-    // Get menu dimensions
-    const menuWidth = customMenu.offsetWidth;
-    const menuHeight = customMenu.offsetHeight;
-
-    // Get viewport dimensions
-    const windowWidth = window.innerWidth;
-    const windowHeight = document.documentElement.clientHeight;
-
-    let posX = e.pageX;
-    let posY = e.pageY;
-
-    if (posX + menuWidth > windowWidth) {
-    posX = Math.max(windowWidth - menuWidth - 30, 30);
-    }
-    if (posY + menuHeight > windowHeight) {
-    posY = Math.max(windowHeight - menuHeight - 10, 10);
+    if (customMenu.style.display == "block") {
+        customMenu.style.display = "none"
+        return;
     }
 
-    // Apply positioning
-    customMenu.style.left = `${posX}px`;
-    customMenu.style.top = `${posY}px`;
+    e.stopPropagation()
+
+    customMenu.style.left = `10px`;
+    customMenu.style.top = `10px`;
     customMenu.style.display = "block";
+    customMenu.style.position = "absolute"
 });
 
 
@@ -295,85 +283,6 @@ function showPopup(popup){
     popup.classList.add("show")
     popup.classList.remove("hide")
 }
-
-
-// async function downloadFullWebsiteAsPDF(filename = "website_snapshot") {
-//     const { jsPDF } = window.jspdf;
-//     const scaleFactor = 2;
-
-//     // Step 1: Replace all <textarea> with <div> for full text rendering
-//     const textareas = document.querySelectorAll("textarea");
-//     textareas.forEach((ta) => {
-//         const div = document.createElement("div");
-//         div.textContent = ta.value;
-//         const style = window.getComputedStyle(ta);
-//         for (const prop of style) div.style[prop] = style.getPropertyValue(prop);
-//         div.style.whiteSpace = "pre-wrap";
-//         div.style.wordBreak = "break-word";
-//         div.style.border = style.border || "1px solid #ccc";
-//         div.style.background = style.background || "#fff";
-//         ta.parentNode.insertBefore(div, ta);
-//         ta.style.display = "none";
-//     });
-
-//     window.scrollTo(0, 0);
-
-//     const body = document.body;
-//     body.style.boxShadow = "none";
-//     const html = document.documentElement;
-//     const totalWidth = Math.max(body.scrollWidth, html.scrollWidth);
-//     const totalHeight = Math.max(body.scrollHeight, html.scrollHeight);
-
-//     const canvas = await html2canvas(document.body, {
-//         scale: scaleFactor,
-//         width: totalWidth,
-//         height: totalHeight,
-//         useCORS: true,
-//         allowTaint: true,
-//         backgroundColor: null, // Important for transparent background
-//     });
-
-//     const imageData = canvas.toDataURL("image/png");
-
-//     const pdf = new jsPDF("p", "mm", "a4");
-//     const pageWidth = pdf.internal.pageSize.getWidth();
-//     const pageHeight = pdf.internal.pageSize.getHeight();
-
-//     const imgProps = pdf.getImageProperties(imageData);
-//     const imgWidth = pageWidth;
-//     const imgHeight = (imgProps.height * imgWidth) / imgProps.width;
-
-//     let heightLeft = imgHeight;
-//     let position = 0;
-
-//     const drawPage = () => {
-//         pdf.setFillColor(0, 0, 0); // black background
-//         pdf.rect(0, 0, pageWidth, pageHeight, "F");
-//         pdf.addImage(imageData, "PNG", 0, position, imgWidth, imgHeight);
-//     };
-
-//     drawPage();
-//     heightLeft -= pageHeight;
-
-//     while (heightLeft > 0) {
-//         position = heightLeft - imgHeight;
-//         pdf.addPage();
-//         drawPage();
-//         heightLeft -= pageHeight;
-//     }
-
-//     pdf.save(`${filename}.pdf`);
-
-//     // Restore textareas after capture
-//     textareas.forEach((ta) => {
-//         ta.style.display = "block";
-//         if (ta.previousSibling && ta.previousSibling.nodeName === "DIV") {
-//             ta.parentNode.removeChild(ta.previousSibling);
-//         }
-//     });
-
-//     body.style.boxShadow = "0px 0px 10px 3px lightgray inset";
-// }
 
 async function downloadFullWebsiteAsPDF(filename = "website_snapshot", layout = "portrait") {
     const { jsPDF } = window.jspdf;
