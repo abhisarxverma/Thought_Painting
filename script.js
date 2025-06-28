@@ -490,7 +490,7 @@ function insertBox(width, height, row) {
 
     
     const inputInsideBox = document.createElement("textarea")
-    inputInsideBox.style.background = "linear-gradient(to right, #0a0a0a, #111111, #1a1a1a)";
+    // inputInsideBox.style.background = "linear-gradient(to right, #0a0a0a, #111111, #1a1a1a)";
     inputInsideBox.classList = "boxtextarea"
     inputInsideBox.style.color = color
     inputInsideBox.style.fontSize = getString(getRandom(minFontSize, maxFontSize))
